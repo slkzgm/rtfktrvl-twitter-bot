@@ -14,8 +14,7 @@ const clonesContractAbi = [{"inputs":[],"stateMutability":"nonpayable","type":"c
 
 const tweet = async (item) => {
   try {
-    await client.v2.tweet(`${item.name.toUpperCase()} #${item.id} minted.\nDNA: ${item.dna.toUpperCase()}\nOwner: ${item.owner}\nBlock #${item.mintedAtBlock}
-    https://opensea.io/assets/ethereum/${item.contractAddress}/${item.id}`);
+    await client.v2.tweet(`${item.name.toUpperCase()} #${item.id} minted.\nDNA: ${item.dna.toUpperCase()}\nOwner: ${item.owner}\nBlock #${item.mintedAtBlock}\nhttps://opensea.io/assets/ethereum/${item.contractAddress}/${item.id}`);
   } catch (e) {
     console.log(e);
   }
@@ -33,7 +32,7 @@ const options = {
     onTimeout: false
   }
 };
-const web3 = new Web3(new Web3.providers.WebsocketProvider(providerUrl));
+const web3 = new Web3(new Web3.providers.WebsocketProvider(providerUrl, options));
 const mnlthContract = new web3.eth.Contract(mnlthContractAbi, mnlthContractAddress);
 const mintvialsContract = new web3.eth.Contract(mintvialsContractAbi, mintvialsContractAddress);
 
