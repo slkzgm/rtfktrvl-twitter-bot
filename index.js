@@ -23,7 +23,7 @@ const tweet = async (item) => {
 const options = {
   clientConfig: {
     keepalive: true,
-    keepAliveInterval: -1
+    keepaliveInterval: -1
   },
   reconnect: {
     auto: true,
