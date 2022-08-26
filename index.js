@@ -14,13 +14,25 @@ const clonesContractAbi = [{"inputs":[],"stateMutability":"nonpayable","type":"c
 
 const tweet = async (item) => {
   try {
-    await client.v2.tweet(`${item.name.toUpperCase()} #${item.id} minted.\nDNA: ${item.dna.toUpperCase()}\nOwner: ${item.owner}
+    await client.v2.tweet(`${item.name.toUpperCase()} #${item.id} minted.\nDNA: ${item.dna.toUpperCase()}\nOwner: ${item.owner}\nBlock #${item.mintedAtBlock}
     https://opensea.io/assets/ethereum/${item.contractAddress}/${item.id}`);
   } catch (e) {
     console.log(e);
   }
 }
 
+const options = {
+  clientConfig: {
+    keepalive: true,
+    keepAliveInterval: -1
+  },
+  reconnect: {
+    auto: true,
+    delay: 1000,
+    maxAttempts: 10,
+    onTimeout: false
+  }
+};
 const web3 = new Web3(new Web3.providers.WebsocketProvider(providerUrl));
 const mnlthContract = new web3.eth.Contract(mnlthContractAbi, mnlthContractAddress);
 const mintvialsContract = new web3.eth.Contract(mintvialsContractAbi, mintvialsContractAddress);
@@ -36,7 +48,8 @@ mnlthContract.events.TransferSingle({},
       const from = event.returnValues.from;
       if (tx.input === '0xd5482804') {
         const skinvialId = await retrieveSkinvialId(event.transactionHash);
-        const metadata = await retrieveERC721Metadata(skinvialsContractAddress, skinvialsContractAbi, 'uri', skinvialId)
+        const metadata = await retrieveERC721Metadata(skinvialsContractAddress, skinvialsContractAbi, 'uri', skinvialId);
+        const block = event.blockNumber;
         const dna = metadata.attributes.filter(attr => attr.trait_type === 'DNA')[0].value;
 
         await tweet({
@@ -44,7 +57,8 @@ mnlthContract.events.TransferSingle({},
           id: skinvialId,
           owner: from,
           dna,
-          contractAddress: skinvialsContractAddress
+          contractAddress: skinvialsContractAddress,
+          mintedAtBlock: block
         });
       }
     } catch (e) {
@@ -71,6 +85,7 @@ mintvialsContract.events.TransferSingle({},
       try {
         const cloneId = await retrieveCloneId(event.transactionHash);
         const metadata = await retrieveERC721Metadata(clonesContractAddress, clonesContractAbi, 'tokenURI', cloneId);
+        const block = event.blockNumber;
         const dna = metadata.attributes.filter(attr => attr.trait_type === 'DNA')[0].value;
 
         await tweet({
@@ -78,7 +93,8 @@ mintvialsContract.events.TransferSingle({},
           id: cloneId,
           owner: from,
           dna,
-          contractAddress: clonesContractAddress
+          contractAddress: clonesContractAddress,
+          mintedAtBlock: block
         });
       } catch (e) {
         console.log(e);
