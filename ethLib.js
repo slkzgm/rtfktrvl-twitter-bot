@@ -1,7 +1,8 @@
+require('dotenv').config()
 const Web3 = require("web3");
 const axios = require("axios");
 
-const providerUrl = "wss://mainnet.infura.io/ws/v3/373ca1b7a588416fb561c2693c84a602";
+const providerUrl = process.env.WEB3_PROVIDER;
 
 const getBlockNumber = async () => {
   const web3 = new Web3(new Web3.providers.WebsocketProvider(providerUrl));
