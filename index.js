@@ -15,7 +15,12 @@ const clonesContractAbi = [{"inputs":[],"stateMutability":"nonpayable","type":"c
 
 const tweet = async (item) => {
   try {
-    await client.v2.tweet(`${item.name.toUpperCase()} #${item.id} minted.\nDNA: ${item.dna.toUpperCase()}\nOwner: ${item.owner}\nBlock #${item.mintedAtBlock}\nhttps://opensea.io/assets/ethereum/${item.contractAddress}/${item.id}`);
+    const imgUrl = item.name === 'CLONE X'
+      ? `https://clonex-assets.rtfkt.com/images/${item.id}.png`
+      : `https://ipfs.io/ipfs/QmbdbiLHPQskiUkVPYVonp8nisu7T71Hhw9be2jYxyJymG/${item.dna.toLowerCase()}.png`;
+    await client.v2.tweet({
+      text: `${item.name.toUpperCase()} #${item.id} minted.\nDNA: ${item.dna.toUpperCase()}\nOwner: ${item.owner}\nBlock #${item.mintedAtBlock}\n${imgUrl}`,
+    });
   } catch (e) {
     console.log(e);
   }
