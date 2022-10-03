@@ -11,6 +11,7 @@
   "dependencies": {
     "axios": "^0.27.2",
     "dotenv": "^16.0.2",
+    "resize-image-buffer": "^1.0.0",
     "twitter-api-v2": "^1.12.5",
     "web3": "^1.7.5"
   }
